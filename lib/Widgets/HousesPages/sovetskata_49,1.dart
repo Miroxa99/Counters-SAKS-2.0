@@ -1,14 +1,31 @@
+import 'package:counters2/Widgets/HousesPages/sovetskata_49,1_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-class Sovetskaya49Page extends StatelessWidget {
+class Sovetskaya49Page extends StatefulWidget {
   const Sovetskaya49Page({super.key});
 
   @override
+  State<Sovetskaya49Page> createState() => _Sovetskaya49PageState();
+}
+
+class _Sovetskaya49PageState extends State<Sovetskaya49Page> {
+  final _model = SaveCountersModel();
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: const Text('Советская 49/1')),
-        body: Container(child: FlutNumberAndMeterReading()));
+    return SaveCountersModelProvider(
+      model: _model,
+      child: Scaffold(
+          appBar: AppBar(title: const Text('Советская 49/1')),
+          floatingActionButton: FloatingActionButton(
+              child: const Icon(Icons.done),
+              onPressed: () {
+                SaveCountersModelProvider.of(context)
+                    ?.model
+                    .finishDataCounters();
+              }),
+          body: Container(child: FlutNumberAndMeterReading())),
+    );
   }
 }
 
@@ -65,8 +82,13 @@ class _SliderTextRowState extends State<SliderTextRow> {
               autoClose: false,
               onPressed: ((context) {
                 setState(() {
-                  if(_LampOn == Colors.white) {_LampOn = Colors.red; _LampBackgroundOn = Colors.black; }
-                  else {_LampOn = Colors.white; _LampBackgroundOn = Colors.yellow;}
+                  if (_LampOn == Colors.white) {
+                    _LampOn = Colors.red;
+                    _LampBackgroundOn = Colors.black;
+                  } else {
+                    _LampOn = Colors.white;
+                    _LampBackgroundOn = Colors.yellow;
+                  }
                   //TODO Доделать нажатие лампочки
                 });
               }),
@@ -78,9 +100,18 @@ class _SliderTextRowState extends State<SliderTextRow> {
         ),
         child: ListTile(
             leading: Text('${index + 1}'),
-            title: const TextField(
+            title: TextField(
+              decoration: const InputDecoration(border: OutlineInputBorder()),
               keyboardType: TextInputType.number,
               textInputAction: TextInputAction.next,
+              onChanged: (value) {
+                SaveCountersModelProvider.of(context)?.model.dataCounters = value;
+              },
+              onEditingComplete: () {
+                SaveCountersModelProvider.of(context)
+                    ?.model
+                    .saveDataCounters();
+              },
             )));
   }
 }
