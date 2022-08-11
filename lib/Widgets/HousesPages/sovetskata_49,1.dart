@@ -49,7 +49,7 @@ class _FlutNumberAndMeterReadingState extends State<FlutNumberAndMeterReading> {
         Expanded(child:
             ListView.builder(itemBuilder: (BuildContext context, int index) {
           return SliderTextRow(
-            index: index,
+            index: index + 1,
           );
         }))
       ],
@@ -74,6 +74,7 @@ class _SliderTextRowState extends State<SliderTextRow> {
 
   @override
   Widget build(BuildContext context) {
+    var useModel = SaveCountersModelProvider.of(context)?.model;
     return Slidable(
         endActionPane: ActionPane(
           motion: ScrollMotion(),
@@ -99,19 +100,19 @@ class _SliderTextRowState extends State<SliderTextRow> {
           ],
         ),
         child: ListTile(
-            leading: Text('${index + 1}'),
+            leading: Text('${index}'),
             title: TextField(
               decoration: const InputDecoration(border: OutlineInputBorder()),
               keyboardType: TextInputType.number,
-              textInputAction: TextInputAction.next,
+              
               onChanged: (value) {
-                SaveCountersModelProvider.of(context)?.model.dataCounters = value;
+                useModel?.flexNumber = index.toString();
+                useModel?.dataCounters = value;
               },
               onEditingComplete: () {
-                SaveCountersModelProvider.of(context)
-                    ?.model
-                    .saveDataCounters();
+                useModel?.saveDataCounters();
               },
+              textInputAction: TextInputAction.next,
             )));
   }
 }

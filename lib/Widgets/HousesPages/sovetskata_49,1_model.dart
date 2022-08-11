@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class SaveCountersModel {
   var dataCounters = '';
-  void finishDataCounters() {
- 
-  }
+  var flexNumber = '';
+  void finishDataCounters() {}
   void saveDataCounters() {
+    print(flexNumber);
     print(dataCounters);
   }
 }
