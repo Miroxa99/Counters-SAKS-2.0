@@ -4,14 +4,9 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-class Sovetskaya49Page extends StatefulWidget {
-  const Sovetskaya49Page({super.key});
+class Sovetskaya49Page extends StatelessWidget {
+  const Sovetskaya49Page({Key? key}) : super(key: key);
 
-  @override
-  State<Sovetskaya49Page> createState() => _Sovetskaya49PageState();
-}
-
-class _Sovetskaya49PageState extends State<Sovetskaya49Page> {
   @override
   Widget build(BuildContext context) {
     return SaveCountersModelProvider(
