@@ -41,8 +41,7 @@ class SaveCountersModel extends ChangeNotifier {
     print(flexNumber);
     print(dataCounters);
     // myKeyList.addAll();
-    final String getDataFromBox =
-        await box.get(flexNumber);
+    final String getDataFromBox = await box.get(flexNumber);
     print(getDataFromBox);
     // final String futureTestText = await Future.value(getDataFromBox);
     return getDataFromBox;
@@ -51,22 +50,21 @@ class SaveCountersModel extends ChangeNotifier {
   Future readData() async {}
 }
 
-class SaveCountersModelProvider extends InheritedNotifier {
-  final SaveCountersModel model;
+class SaveCountersModelProvider extends InheritedNotifier<SaveCountersModel> {
+  const SaveCountersModelProvider({
+    Key? key,
+    required SaveCountersModel notifier,
+    required Widget child,
+  }) : super(
+          key: key,
+          notifier: notifier,
+          child: child,
+        );
 
-  const SaveCountersModelProvider(
-      {Key? key, required this.model, required this.child})
-      : super(key: key, notifier: model, child: child);
-
-  final Widget child;
-
-  static SaveCountersModelProvider? of(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<SaveCountersModelProvider>();
-  }
-
-  @override
-  bool updateShouldNotify(SaveCountersModelProvider oldWidget) {
-    return true;
+  static SaveCountersModel of(BuildContext context) {
+    var provider =
+        context.dependOnInheritedWidgetOfExactType<SaveCountersModelProvider>();
+    assert(provider != null, 'Не найден SaveCountersModelProvider');
+    return provider!.notifier!;
   }
 }
