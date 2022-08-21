@@ -113,50 +113,35 @@ class ElementsListTitle extends StatefulWidget {
 }
 
 class _ElementsListTitleState extends State<ElementsListTitle> {
-  late final _future =
-      SaveCountersModelProvider.of(context).readDataCountersFromBox();
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  late StringDataAsync _readData;
+  late StringDataAsync _saveData;
+  late InputString _onChange;
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    box();
-  }
-
-  Future box() async {
-    final box = await Hive.openBox('counters_box');
-    print(box.isOpen);
-    String getDataFromBox =
-        await box.get(SaveCountersModelProvider.of(context).flexNumber);
-    final _personBox = await Hive.openBox('counters_box');
-    return getDataFromBox;
+    _readData = SaveCountersModelProvider.of(context).readDataCountersBy;
+    _saveData = SaveCountersModelProvider.of(context).saveDataCountersWith;
+    _onChange = SaveCountersModelProvider.of(context).onChangeCounters;
   }
 
   @override
   Widget build(BuildContext context) {
-    var useModel = SaveCountersModelProvider.of(context);
-    useModel.flexNumber = widget.index.toString();
-    final Future<String>? readDataCountersFromBoxFuture =
-        useModel.readDataCountersFromBox();
-
+    var index = widget.index.toString();
     return ListTile(
-        leading: Text(useModel.flexNumber),
-        title: FutureBuilder<String>(builder: (BuildContext context, snapshot) {
+      leading: Text(index),
+      title: FutureBuilder<String>(
+        future: _readData(index: index),
+        builder: (BuildContext context, snapshot) {
           Widget children;
           var textFieldData = TextField(
             decoration: const InputDecoration(border: OutlineInputBorder()),
             keyboardType: TextInputType.number,
             onChanged: (value) {
-              useModel.flexNumber = widget.index.toString();
-              useModel.dataCounters = value;
+              _onChange(data: value);
             },
             onEditingComplete: () {
-              useModel.saveDataCounters();
+              _saveData(index: index);
               FocusScope.of(context).nextFocus();
             },
             textInputAction: TextInputAction.next,
@@ -175,6 +160,8 @@ class _ElementsListTitleState extends State<ElementsListTitle> {
           return Center(
             child: children,
           );
-        }));
+        },
+      ),
+    );
   }
 }

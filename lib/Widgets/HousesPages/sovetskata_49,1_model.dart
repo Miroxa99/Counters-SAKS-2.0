@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+typedef Future<String> StringDataAsync({required String index});
+typedef void InputString({required String data});
+
 class SaveCountersModel extends ChangeNotifier {
   var _data = [];
   List get data => _data.toList();
 
-  String dataCounters = '';
-  String flexNumber = '';
+  String _dataCounters = '';
 
   void finishDataCounters() async {}
 
-  Future<String> saveDataCounters() async {
+  Future<String> saveDataCountersWith({required String index}) async {
     final box = await Hive.openBox('counters_box');
     // if (box.isEmpty) {
     //   return '';
@@ -19,31 +21,23 @@ class SaveCountersModel extends ChangeNotifier {
     Hive.isAdapterRegistered(0);
     // await box.deleteFromDisk()
     // final result = await box.add(test);
-    await box.put(flexNumber, dataCounters);
-    String getDataFromBox = box.get(flexNumber);
+    await box.put(index, _dataCounters);
+    String getDataFromBox = box.get(index);
     // await box.add(flexNumber);
     // await box.add(dataCounters);
     print(box.values);
     print(box.keys);
     // _setupData();
-    return box.values.elementAt(int.parse(flexNumber));
+    return box.values.elementAt(int.parse(index));
     // }
   }
 
-  Future<String> readDataCountersFromBox() async {
-    Hive.hashCode;
-    final a = print('dddd');
-    print(Hive.isBoxOpen('counters_box'));
-    print(flexNumber);
-    print(dataCounters);
+  void onChangeCounters({required String data}) => _dataCounters = data;
+
+  Future<String> readDataCountersBy({required String index}) async {
     final box = await Hive.openBox('counters_box');
-    print(Hive.isBoxOpen('counters_box'));
-    print(flexNumber);
-    print(dataCounters);
-    // myKeyList.addAll();
-    final String getDataFromBox = await box.get(flexNumber);
-    print(getDataFromBox);
-    // final String futureTestText = await Future.value(getDataFromBox);
+    print(box.isOpen);
+    String getDataFromBox = await box.get(index);
     return getDataFromBox;
   }
 
