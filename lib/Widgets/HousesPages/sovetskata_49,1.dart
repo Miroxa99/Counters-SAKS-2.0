@@ -12,19 +12,16 @@ class Sovetskaya49Page extends StatefulWidget {
 }
 
 class _Sovetskaya49PageState extends State<Sovetskaya49Page> {
-  final _model = SaveCountersModel();
   @override
   Widget build(BuildContext context) {
     return SaveCountersModelProvider(
-      model: _model,
+      notifier: SaveCountersModel(),
       child: Scaffold(
           appBar: AppBar(title: const Text('Советская 49/1')),
           floatingActionButton: FloatingActionButton(
               child: const Icon(Icons.done),
               onPressed: () {
-                SaveCountersModelProvider.of(context)
-                    ?.model
-                    .finishDataCounters();
+                SaveCountersModelProvider.of(context).finishDataCounters();
               }),
           body: const FlutNumberAndMeterReading()),
     );
@@ -75,7 +72,7 @@ class _SliderTextRowState extends State<SliderTextRow>
 
   @override
   Widget build(BuildContext context) {
-    var useModel = SaveCountersModelProvider.of(context)?.model;
+    var useModel = SaveCountersModelProvider.of(context);
 
     return Slidable(
         endActionPane: ActionPane(
@@ -122,12 +119,11 @@ class ElementsListTitle extends StatefulWidget {
 
 class _ElementsListTitleState extends State<ElementsListTitle> {
   late final _future =
-      SaveCountersModelProvider.of(context)?.model.readDataCountersFromBox();
+      SaveCountersModelProvider.of(context).readDataCountersFromBox();
 
   @override
   void initState() {
     super.initState();
-    
   }
 
   @override
@@ -136,35 +132,36 @@ class _ElementsListTitleState extends State<ElementsListTitle> {
     super.didChangeDependencies();
     box();
   }
+
   Future box() async {
     final box = await Hive.openBox('counters_box');
     print(box.isOpen);
     String getDataFromBox =
-        await box.get(SaveCountersModelProvider.of(context)?.model.flexNumber);
+        await box.get(SaveCountersModelProvider.of(context).flexNumber);
     final _personBox = await Hive.openBox('counters_box');
     return getDataFromBox;
   }
 
   @override
   Widget build(BuildContext context) {
-    var useModel = SaveCountersModelProvider.of(context)?.model;
-    useModel?.flexNumber = widget.index.toString();
+    var useModel = SaveCountersModelProvider.of(context);
+    useModel.flexNumber = widget.index.toString();
     final Future<String>? readDataCountersFromBoxFuture =
-        useModel?.readDataCountersFromBox();
+        useModel.readDataCountersFromBox();
 
     return ListTile(
-        leading: Text(useModel!.flexNumber),
+        leading: Text(useModel.flexNumber),
         title: FutureBuilder<String>(builder: (BuildContext context, snapshot) {
           Widget children;
           var textFieldData = TextField(
             decoration: const InputDecoration(border: OutlineInputBorder()),
             keyboardType: TextInputType.number,
             onChanged: (value) {
-              useModel?.flexNumber = widget.index.toString();
-              useModel?.dataCounters = value;
+              useModel.flexNumber = widget.index.toString();
+              useModel.dataCounters = value;
             },
             onEditingComplete: () {
-              useModel?.saveDataCounters();
+              useModel.saveDataCounters();
               FocusScope.of(context).nextFocus();
             },
             textInputAction: TextInputAction.next,
